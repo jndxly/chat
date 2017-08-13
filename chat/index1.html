@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+* { margin:0; padding:0;}
+body { font-size:12px;}
+
+#content{margin:auto; width:500px;}
+input{
+margin-top:5px;
+}
+p{
+height: 250px;
+			border: 1px solid;
+			
+}
+
+#loading{
+    width:80px;
+	height: 20px;
+	background:#bbb;
+	color:#000;
+	display:none;
+}
+img{border:0;height:100px;width:100px;}
+.comment { margin-top:10px; padding:10px; border:1px solid #ccc;background:#DDD;}
+.comment h6 { font-weight:700; font-size:14px;}
+.para { margin-top:5px; text-indent:2em;background:#DDD;}
+</style>
+ <!--   引入jQuery -->
+<script src="jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+   $(function(){
+
+   	updateMsg();
+
+	$(':submit').click(function(){
+		$.post('backend1.php',{
+			'user':$('#name').val(),
+			'msg':$('#msg').val()
+		},function(){
+			$('textarea').val("");
+			updateMsg();
+		});
+		return false;
+
+	});
+
+
+   	function updateMsg(){
+		$.get('backend1.php',function(xml){
+			$('textarea').val("");
+			addMsg(xml);
+		});
+   	 }
+
+ 	 function addMsg(xml){
+		if($("status",xml).text() == 2) return;
+		var html = "";
+		$("message",xml).each(function(){
+			var user = $('author',this).text();
+			var msg = $('text',this).text();
+			var html = "<strong>"+user+"</strong>: "+msg+"<br />";
+			$('p').prepend(html);
+			});
+		
+		
+
+ 	}
+
+
+   })
+//]]>
+</script>
+</head>
+<body>
+
+<div id="content" >
+<!--	<textarea rows="10" cols="50"></textarea>-->
+	<p></p>
+	<form id="chatForm" >
+		姓名: <input id="name" size=50></input><br/>
+		内容: <input id="msg" size=50></input><br/>
+		<input type="submit"></input>
+	</form>
+</div>
+
+
+</body>
+
+</html>
